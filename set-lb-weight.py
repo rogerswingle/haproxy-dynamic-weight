@@ -3,7 +3,7 @@
 # Please note the LICENSE file accompanying this script.
 # See https://github.com/reincubate/haproxy-dynamic-weight for more information.
 
-import os, socket, sys, commands, memcache
+import os, socket, sys, commands, redis
 
 # Let's find the current state of the load-balancer
 SOCKET = '/etc/haproxy/haproxy.sock'
@@ -13,9 +13,9 @@ state, servers = {}, {}
 debug = len(sys.argv) > 2
 
 if len(sys.argv) < 2:
-    raise Exception( 'You must pass the hostname and port of your memcached server' )
+    raise Exception( 'You must pass the hostname and port of your redis server' )
 
-mc = memcache.Client( [ sys.argv[1] ], )
+r = redis.StrictRedis(host=sys.argv[1], port=sys.argv[2], db=0)
 
 for l in lines:
     vals = l.split(',')
@@ -42,7 +42,7 @@ for l in lines:
     }
 
     if hostname not in servers: # Let's get an array of all the servers we need to know about
-        servers[hostname] = mc.get( 'server-weight-%s' % hostname, ) # What does memcached say?
+        servers[hostname] = r.get( 'server-weight-%s' % hostname, ) # What does redis say?
 
 command = []
 

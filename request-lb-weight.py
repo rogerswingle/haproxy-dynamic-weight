@@ -14,7 +14,7 @@ hostname = socket.gethostname()
 max_load = 5
 
 if len(sys.argv) < 2:
-    raise Exception( 'You must pass the hostname and port of your memcached server' )
+    raise Exception( 'You must pass the hostname and port of your redis server' )
 
 # Weight must range from 1 - 256
 if load < 0.001:
