@@ -61,10 +61,10 @@ for site in state.keys():
     if debug: print 'Setting weights for %s...' % site
 
     for hostname in state[site].keys():
-        perc = ( 100.0 / state[site][hostname]['weight'] * servers[hostname] ) - 100.0
+        perc = ( 100.0 / state[site][hostname]['weight'] * float(servers[hostname]) ) - 100.0
         if debug: print '  - Changing %s from %s to %s, %.2f%%' % ( hostname, state[site][hostname]['weight'], servers[hostname], perc )
         # Must stop this from adding disabled things back into the balance...
-        command.append( 'set weight %s/%s %d' % ( site, hostname, servers[hostname], ) )
+        command.append( 'set weight %s/%s %s' % ( site, hostname, servers[hostname], ) )
 
 # Let's tell the load-balancer what to do
 if command:
